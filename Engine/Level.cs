@@ -32,7 +32,9 @@ namespace Engine
 
         private List<Line> _grid;
         private Creatures.Hero _hero;
-        private List<Ellipse> _enemies;
+        private List<Creatures.Blob> _blobs;
+
+        private int _numEnemies;
 
         private Game _publisher;
 
@@ -46,33 +48,18 @@ namespace Engine
             _height = height;
             _spacing = spacing;
 
-            _openings = new List<Opening>();
+            _numEnemies = enemies;
 
-            _enemies = new List<Ellipse>(enemies);
+            _openings = new List<Opening>();
 
             _keyHandler = new Dictionary<Keys.Key, bool>();
         }
 
         public void Setup()
         {
-            for (int i = 0; i < _enemies.Capacity; i++)
-            {
-                Ellipse e = new Ellipse();
-
-                e.Width = _spacing / 2;
-                e.Height = _spacing / 2;
-
-                e.Margin = new Thickness(
-                    ThreadSafeRandom.Next((int)(-_width / 2), (int)(_width / 2)), 
-                    ThreadSafeRandom.Next((int)(-_height / 2), (int)(_height / 2)), 
-                    0, 0);
-
-                _enemies.Add(e);
-            }
-
-            double x = -_width / 2, y = -_height / 2;
+            double x = 0, y = 0;
             bool down = false;
-            _grid = Enumerable.Repeat(0, (int)(_width / _spacing + _height / _spacing)).Select(n =>
+            _grid = Enumerable.Repeat(0, (int)(Math.Ceiling(_width / _spacing) + Math.Ceiling(_height / _spacing))).Select(n =>
             {
                 Line l = new Line();
 
@@ -84,10 +71,10 @@ namespace Engine
                 l.X1 = 0;
                 l.Y1 = 0;
 
-                if (x >= _width / 2)
+                if (x >= _width)
                 {
                     down = true;
-                    x = -_width / 2;
+                    x = 0;
                 }
                 else if (down)
                 {
@@ -117,13 +104,15 @@ namespace Engine
             GC.Collect();
         }
 
-        internal void Setup(ref Creatures.Hero hero, Game publisher, TimeSpan speed)
+        internal void Setup(ref Creatures.Hero hero, Game publisher, TimeSpan speed, Canvas c)
         {
             _publisher = publisher;
 
             _run = true;
 
             _hero = hero;
+
+            _blobs = Enumerable.Repeat(0, _numEnemies).Select(n => new Creatures.Blob(_width, _height, _spacing / 2, _spacing / 2, 0, 0, c)).ToList();
 
             publisher.KeyChange += KeyHandler;
             publisher.LevelChange += (s, id) =>
@@ -135,6 +124,12 @@ namespace Engine
             {
                 while (_run)
                 {
+                    foreach (Creatures.Blob b in _blobs)
+                    {
+                        b.Move();
+                        edges(b, false);
+                    }
+
                     lock (_locker)
                     {
                         foreach (KeyValuePair<Keys.Key, bool> pair in _keyHandler)
@@ -164,7 +159,7 @@ namespace Engine
                             }
                         }
 
-                        edges(_hero);
+                        edges(_hero, true);
                     }
 
                     Thread.Sleep(speed);
@@ -195,38 +190,39 @@ namespace Engine
 
                 c.Children.Add(rect);
             });
+            _blobs.ForEach(b => c.Children.Add(b.Body));
 
             c.Children.Add(_hero.Body);
         }
 
-        private void edges(Creatures.Creature thing)
+        private void edges(Creatures.Creature thing, bool changable)
         {
             Creatures.Position pos = thing.Position;
 
             if (pos.X <= 0 || pos.X >= _width || pos.Y <= 0 || pos.Y >= _height)
             {
                 int id = -1;
-                if (_openings.Any(o =>
+                if (changable && _openings.Any(o =>
                 {
                     id = o.Id;
                     return (o.X >= pos.X - (thing.Size.Width + _spacing) && o.X <= pos.X + (thing.Size.Width + _spacing)) &&
                     (o.Y >= pos.Y - (thing.Size.Height + _spacing) && o.Y <= pos.Y + (thing.Size.Height + _spacing));
                 }))
                 {
-                    _hero.Position.Set(0, 0);
+                    thing.Position.Set(0, 0);
                     LevelChange(this, id);
                 }
                 else
                 {
-                    if (pos.X <= -_width)
-                        thing.Position.Set(-_width, pos.Y);
-                    else if (pos.X >= _width / 2)
-                        thing.Position.Set(_width / 2, pos.Y);
+                    if (pos.X <= 0)
+                        thing.Position.Set(0, pos.Y);
+                    else if (pos.X >= _width)
+                        thing.Position.Set(_width, pos.Y);
 
-                    if (pos.Y <= -_height)
-                        thing.Position.Set(pos.X, -_height);
-                    else if (pos.Y >= _height / 2)
-                        thing.Position.Set(pos.X, _height / 2);
+                    if (pos.Y <= 0)
+                        thing.Position.Set(pos.X, 0);
+                    else if (pos.Y >= _height)
+                        thing.Position.Set(pos.X, _height);
                 }
             }
         }

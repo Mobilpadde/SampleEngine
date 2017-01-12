@@ -47,7 +47,7 @@ namespace Engine
             _levels = levels;
             _currentLevel = current;
 
-            _currentLevel.Setup(ref _hero, this, speed);
+            _currentLevel.Setup(ref _hero, this, speed, _c);
 
             _levels.ForEach(l => l.LevelChange += levelChange);
 
@@ -76,10 +76,10 @@ namespace Engine
 
         public void KeyHandler(KeyEventArgs e, bool down)
         {
-            List<System.Windows.Input.Key> accepted = new List<System.Windows.Input.Key>(){
-                System.Windows.Input.Key.Right,  System.Windows.Input.Key.Left,   System.Windows.Input.Key.Down,   System.Windows.Input.Key.Up,
-                System.Windows.Input.Key.D,      System.Windows.Input.Key.A,      System.Windows.Input.Key.S,      System.Windows.Input.Key.W,
-                System.Windows.Input.Key.L,      System.Windows.Input.Key.J,      System.Windows.Input.Key.K,      System.Windows.Input.Key.I
+            List<Key> accepted = new List<Key>(){
+                Key.Right,  Key.Left,   Key.Down,   Key.Up,
+                Key.D,      Key.A,      Key.S,      Key.W,
+                Key.L,      Key.J,      Key.K,      Key.I
             };
 
             int idx = accepted.IndexOf(e.Key) % 4;
@@ -98,7 +98,9 @@ namespace Engine
 
             _currentLevel.Dispose();
             _currentLevel = _levels.First(l => l.Id == levelId);
-            _currentLevel.Setup(ref _hero, this, _speed);
+
+            _c.Dispatcher.InvokeAsync(new Action(() => _currentLevel.Setup(ref _hero, this, _speed, _c)), System.Windows.Threading.DispatcherPriority.Render);
+            
 
             Run();
         }

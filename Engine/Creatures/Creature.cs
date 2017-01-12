@@ -8,6 +8,7 @@ namespace Engine.Creatures
     public abstract class Creature
     {
         public double Hp { get; internal set; }
+
         public Ellipse Body;
 
         internal Size Size;
@@ -27,12 +28,12 @@ namespace Engine.Creatures
             Body.Height = height;
 
             Position = new Position(x, y);
-            Position.PostionChanged += MoveTo;
+            Position.PostionChanged += moveTo;
 
             Body.Margin = new Thickness(x, y, 0, 0);
         }
 
-        private void MoveTo(object s, Position e)
+        private void moveTo(object s, Position e)
         {
             _c.Dispatcher.InvokeAsync(new Action(() =>
             {
