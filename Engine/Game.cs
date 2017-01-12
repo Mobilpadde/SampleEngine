@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using System.Linq;
-using System.Windows.Media;
-using System.Windows;
 using System.Threading;
 
 namespace Engine
