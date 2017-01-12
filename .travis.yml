@@ -8,6 +8,9 @@ matrix:
       env: DOTNETCORE=1
     - mono: latest
     
+script:
+  - xbuild /p:Configuration=Travis SampleEngine.sln
+    
 install:
   - sudo apt-get install -y gtk-sharp2
   - nuget restore SampleEngine.sln
