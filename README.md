@@ -6,6 +6,8 @@ If you'd like to help me, please build upon this; as of right now it's pretty cr
 ## Build status
 [![Build Status](https://travis-ci.org/Mobilpadde/SampleEngine.svg?branch=master)](https://travis-ci.org/Mobilpadde/SampleEngine)
 
+Well, apparently Travis can't build windows-depended packages, trying to figure if I can use mono for this.
+
 ## Known Bugs
  * ~~If a teleport to a new level is in the bottom right corner, the hero won't be able to use it.~~
  * Sometimes the program doesn't close after clicking `x`

@@ -1,4 +1,12 @@
 language: csharp
 solution: SampleEngine.sln
+
 os: 
-    - windows
+    - linux
+
+mono:
+    - latest
+    
+install:
+    - sudo apt-get install -y gtk-sharp2
+    - nuget restore SampleEngine.sln
