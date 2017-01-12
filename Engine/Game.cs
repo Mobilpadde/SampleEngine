@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Engine
 {
-    public class Game
+    public class Game : IDisposable
     {
         /// <summary>
         /// Fires when an accepted <see cref="Keys.Key"/> has been touched
@@ -42,8 +42,8 @@ namespace Engine
 
             _hero = new Creatures.Hero(
                 width, height, 
-                ThreadSafeRandom.NextDouble(-width / 2, width / 2), 
-                ThreadSafeRandom.NextDouble(-height / 2, height / 2),
+                Math.ThreadSafeRandom.NextDouble(-width / 2, width / 2),
+                Math.ThreadSafeRandom.NextDouble(-height / 2, height / 2),
                 _c);
 
             _keys = new Dictionary<Move.Direction, Keys.Key>()
@@ -53,6 +53,12 @@ namespace Engine
                 { Move.Direction.South, new Keys.Down() },
                 { Move.Direction.North, new Keys.Up() }
             };
+        }
+
+        public void Dispose()
+        {
+            _currentLevel.Dispose();
+            GC.Collect();
         }
 
         /// <summary>

@@ -78,7 +78,7 @@ namespace Engine
         {
             double x = 0, y = 0;
             bool down = false;
-            _grid = Enumerable.Repeat(0, (int)(Math.Ceiling(_width / _spacing) + Math.Ceiling(_height / _spacing))).Select(n =>
+            _grid = Enumerable.Repeat(0, (int)(System.Math.Ceiling(_width / _spacing) + System.Math.Ceiling(_height / _spacing))).Select(n =>
             {
                 Line l = new Line();
 
@@ -147,7 +147,13 @@ namespace Engine
 
             _hero = hero;
 
-            _blobs = Enumerable.Repeat(0, _numEnemies).Select(n => new Creatures.Blob(_width, _height, _spacing / 2, _spacing / 2, 0, 0, c)).ToList();
+            _blobs = Enumerable.Repeat(0, _numEnemies).Select(n => 
+            {
+                Creatures.Blob b = new Creatures.Blob(_spacing / 2, _spacing / 2, 0, 0, c);
+                b.Setup(_width, _height);
+
+                return b;
+            }).ToList();
 
             publisher.KeyChange += KeyHandler;
             publisher.LevelChange += (s, id) =>
@@ -161,6 +167,7 @@ namespace Engine
                 {
                     foreach (Creatures.Blob b in _blobs)
                     {
+                        b.LookAbout(_hero);
                         b.Move();
                         edges(b, false);
                     }

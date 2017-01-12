@@ -51,6 +51,8 @@ namespace SampleUsage
 
             this.KeyDown += (s, e) => _game.KeyHandler(e, true);
             this.KeyUp += (s, e) => _game.KeyHandler(e, false);
+
+            this.Closing += (s, e) => _game.Dispose();
         }
 
         private void load()
@@ -69,12 +71,12 @@ namespace SampleUsage
 
         private Engine.Level createLevel(int next)
         {
-            double spacing = Engine.ThreadSafeRandom.NextDouble(10, 25);
+            double spacing = Engine.Math.ThreadSafeRandom.NextDouble(10, 25);
 
-            Engine.Level l = new Engine.Level(this.Width, this.Height, spacing, Engine.ThreadSafeRandom.Next(1, 4));
+            Engine.Level l = new Engine.Level(this.Width, this.Height, spacing, Engine.Math.ThreadSafeRandom.Next(1, 4));
 
-            double x = Engine.ThreadSafeRandom.Selector(new double[] { spacing, this.Width - spacing });
-            double y = Engine.ThreadSafeRandom.Selector(new double[] { spacing, this.Height - spacing });
+            double x = Engine.Math.ThreadSafeRandom.Selector(new double[] { spacing, this.Width - spacing });
+            double y = Engine.Math.ThreadSafeRandom.Selector(new double[] { spacing, this.Height - spacing });
 
             l.SetOpening(next, x, y);
 

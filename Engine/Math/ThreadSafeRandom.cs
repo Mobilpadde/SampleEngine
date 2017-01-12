@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engine
+namespace Engine.Math
 {
     public class ThreadSafeRandom
     {

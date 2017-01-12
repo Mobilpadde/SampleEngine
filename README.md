@@ -10,8 +10,9 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
 
 ## Known Bugs
  * ~~If a teleport to a new level is in the bottom right corner, the hero won't be able to use it.~~
- * Sometimes the program doesn't close after clicking `x`
+ * ~~The program doesn't close after clicking `x`~~
  * Enemies doesn't remember their last location
+ * Sometimes the Game won't start
 
 ## Changes
  * 12-01-17
@@ -21,3 +22,5 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
   * Added enemies
   * Updated grid
   *	Added comments
+  * Fixed closing of the Engine
+  * Added a bit of intelligence of the Enemies
