@@ -11,12 +11,21 @@ namespace Engine
 {
     public class Level : EventArgs, IDisposable
     {
+        /// <summary>
+        /// Static id for <see cref="Level"/>s
+        /// </summary>
         public static int StatId { get; private set; }
 
         private static object _locker = new object();
 
+        /// <summary>
+        /// The id of the <see cref="Level"/>
+        /// </summary>
         public int Id { get; private set; }
 
+        /// <summary>
+        /// Fires when <see cref="Level"/>s shoudl change
+        /// </summary>
         internal EventHandler<int> LevelChange;
 
         private bool _run;
@@ -38,6 +47,13 @@ namespace Engine
 
         private Game _publisher;
 
+        /// <summary>
+        /// Contruct a new <see cref="Level"/>
+        /// </summary>
+        /// <param name="width">Sets the width of the <see cref="Level"/></param>
+        /// <param name="height">Sets the height of the <see cref="Level"/></param>
+        /// <param name="spacing">Spacing between the grid</param>
+        /// <param name="enemies">How many <see cref="Creatures.Blob"/>s the <see cref="Level"/> should contain</param>
         public Level(double width, double height, double spacing, int enemies)
         {
             Id = StatId++;
@@ -55,6 +71,9 @@ namespace Engine
             _keyHandler = new Dictionary<Keys.Key, bool>();
         }
 
+        /// <summary>
+        /// Run to setup the level
+        /// </summary>
         public void Setup()
         {
             double x = 0, y = 0;
@@ -91,11 +110,20 @@ namespace Engine
             }).ToList();
         }
 
+        /// <summary>
+        /// Sets portals to another <see cref="Level"/>
+        /// </summary>
+        /// <param name="to">The id of the next <see cref="Level"/></param>
+        /// <param name="x">X-coordinate of the portal</param>
+        /// <param name="y">Y-coordinate of the portal</param>
         public void SetOpening(int to, double x, double y)
         {
             _openings.Add(new Opening(to, x, y));
         }
 
+        /// <summary>
+        /// Run this after each <see cref="Level"/> change
+        /// </summary>
         public void Dispose()
         {
             _publisher.KeyChange -= KeyHandler;
@@ -104,6 +132,13 @@ namespace Engine
             GC.Collect();
         }
 
+        /// <summary>
+        /// Sets up the level
+        /// </summary>
+        /// <param name="hero"><see cref="Creatures.Hero"/> to move around</param>
+        /// <param name="publisher">The <see cref="Game"/>-class</param>
+        /// <param name="speed">Sets the update speed of the <see cref="Level"/></param>
+        /// <param name="c"></param>
         internal void Setup(ref Creatures.Hero hero, Game publisher, TimeSpan speed, Canvas c)
         {
             _publisher = publisher;
@@ -169,11 +204,20 @@ namespace Engine
             _moveThread.Start();
         }
 
+        /// <summary>
+        /// Fires when a key has been touched
+        /// </summary>
+        /// <param name="sender">The sender; not important</param>
+        /// <param name="key">Sets the status of the current <see cref="Keys.Key"/></param>
         internal void KeyHandler(object sender, Keys.Key key)
         {
             _keyHandler[key] = key.IsDown;
         }
 
+        /// <summary>
+        /// Handles the drawing of the level
+        /// </summary>
+        /// <param name="c">The canvas to draw on</param>
         internal void Draw(Canvas c)
         {
             _grid.ForEach(elm => c.Children.Add(elm));

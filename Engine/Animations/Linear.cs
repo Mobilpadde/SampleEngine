@@ -12,6 +12,10 @@ namespace Engine.Animations
         private bool _right;
         private Canvas _c;
 
+        /// <summary>
+        /// Constructs a new <see cref="Animation"/> of type <see cref="Animations.Linear"/>
+        /// </summary>
+        /// <param name="c"></param>
         public Linear(Canvas c)
         {
             _c = c;
@@ -26,6 +30,9 @@ namespace Engine.Animations
             _line.X2 = -30;
         }
 
+        /// <summary>
+        /// Runs the <see cref="Animation"/>
+        /// </summary>
         public void Run()
         {
             _c.Dispatcher.InvokeAsync(new Action(() =>

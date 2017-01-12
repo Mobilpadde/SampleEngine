@@ -9,7 +9,14 @@ namespace Engine
 {
     public class Game
     {
+        /// <summary>
+        /// Fires when an accepted <see cref="Keys.Key"/> has been touched
+        /// </summary>
         internal event EventHandler<Keys.Key> KeyChange;
+
+        /// <summary>
+        /// Fires when <see cref="Level"/> should change
+        /// </summary>
         internal event EventHandler<int> LevelChange;
 
         private static Creatures.Hero _hero;
@@ -23,6 +30,12 @@ namespace Engine
 
         private TimeSpan _speed;
 
+        /// <summary>
+        /// Setup the main game
+        /// </summary>
+        /// <param name="width">Width of the hero</param>
+        /// <param name="height">Height of the hero</param>
+        /// <param name="c">The canvas to draw on</param>
         public Game(double width, double height, Canvas c)
         {
             _c = c;
@@ -42,6 +55,12 @@ namespace Engine
             };
         }
 
+        /// <summary>
+        /// Setup levels and speed of the game
+        /// </summary>
+        /// <param name="levels"><see cref="Level"/>s to load</param>
+        /// <param name="current"><see cref="Level"/> to begin in</param>
+        /// <param name="speed">Run speed of the <see cref="Game"/></param>
         public void Setup(List<Level> levels, Level current, TimeSpan speed)
         {
             _levels = levels;
@@ -54,16 +73,27 @@ namespace Engine
             _speed = speed;
         }
 
+        /// <summary>
+        /// What to load
+        /// </summary>
+        /// <param name="a">An action to fire</param>
         public void Load(Action a)
         {
             fire(a);
         }
 
+        /// <summary>
+        /// What to do when everything has loaded
+        /// </summary>
+        /// <param name="a">An action to fire</param>
         public void Loaded(Action a)
         {
             fire(a);
         }
 
+        /// <summary>
+        /// Run everything
+        /// </summary>
         public void Run()
         {
             _c.Dispatcher.InvokeAsync(new Action(() => 
@@ -74,6 +104,11 @@ namespace Engine
             }), System.Windows.Threading.DispatcherPriority.Render);
         }
 
+        /// <summary>
+        /// Handle keystrokes to walk around
+        /// </summary>
+        /// <param name="e">The keystroke</param>
+        /// <param name="down">If the key is pressed or not</param>
         public void KeyHandler(KeyEventArgs e, bool down)
         {
             List<Key> accepted = new List<Key>(){

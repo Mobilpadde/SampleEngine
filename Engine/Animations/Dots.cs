@@ -19,6 +19,10 @@ namespace Engine.Animations
 
         private Canvas _c;
 
+        /// <summary>
+        /// Constructs a new <see cref="Animation"/> of type <see cref="Animations.Dots"/>
+        /// </summary>
+        /// <param name="c"></param>
         public Dots(Canvas c)
         {
             _c = c;
@@ -51,6 +55,9 @@ namespace Engine.Animations
             _dots[_idx].Fill = _secondary;
         }
 
+        /// <summary>
+        /// Runs the <see cref="Animation"/>
+        /// </summary>
         public void Run()
         {
             _c.Dispatcher.InvokeAsync(new Action(() =>
