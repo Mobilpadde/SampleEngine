@@ -72,7 +72,7 @@ namespace Engine
             _levels = levels;
             _currentLevel = current;
 
-            _currentLevel.Setup(ref _hero, this, speed, _c);
+            _currentLevel.Setup(ref _hero, this, speed);
 
             _levels.ForEach(l => l.LevelChange += levelChange);
 
@@ -106,7 +106,7 @@ namespace Engine
             {
                 _c.Children.Clear();
 
-                _currentLevel.Draw(_c);
+                _currentLevel.Draw();
             }), System.Windows.Threading.DispatcherPriority.Render);
         }
 
@@ -140,7 +140,7 @@ namespace Engine
             _currentLevel.Dispose();
             _currentLevel = _levels.First(l => l.Id == levelId);
 
-            _c.Dispatcher.InvokeAsync(new Action(() => _currentLevel.Setup(ref _hero, this, _speed, _c)), System.Windows.Threading.DispatcherPriority.Render);
+            _c.Dispatcher.InvokeAsync(new Action(() => _currentLevel.Setup(ref _hero, this, _speed)), System.Windows.Threading.DispatcherPriority.Render);
             
 
             Run();

@@ -34,8 +34,6 @@ namespace Engine.Creatures
         /// <param name="c">The Canvas to draw the <see cref="Creatures.Enemy"/> on</param>
         public Enemy(double width, double height, double x, double y, Canvas c) : base(width, height, x, y, c)
         {
-            Radius = Math.ThreadSafeRandom.NextDouble(10, 35);
-
             _walk = Math.ThreadSafeRandom.NextDouble(0.1, 1);
             _run = Math.ThreadSafeRandom.NextDouble(_walk, _walk + 0.5);
 
@@ -54,6 +52,8 @@ namespace Engine.Creatures
         /// <param name="height">Height of the <see cref="Level"/></param>
         internal void Setup(double width, double height)
         {
+            Radius = Math.ThreadSafeRandom.NextDouble(0, System.Math.Max(width, height));
+
             _width = width;
             _height = height;
         }
@@ -71,7 +71,13 @@ namespace Engine.Creatures
                 Speed = _run;
             }
             else
+            {
+                Wish = new Position(
+                    Math.ThreadSafeRandom.NextDouble(0, _width),
+                    Math.ThreadSafeRandom.NextDouble(0, _height));
+
                 Speed = _walk;
+            }
         }
 
         /// <summary>

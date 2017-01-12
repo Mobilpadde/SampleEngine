@@ -46,6 +46,7 @@ namespace Engine
         private int _numEnemies;
 
         private Game _publisher;
+        private Canvas _c;
 
         /// <summary>
         /// Contruct a new <see cref="Level"/>
@@ -54,7 +55,7 @@ namespace Engine
         /// <param name="height">Sets the height of the <see cref="Level"/></param>
         /// <param name="spacing">Spacing between the grid</param>
         /// <param name="enemies">How many <see cref="Creatures.Blob"/>s the <see cref="Level"/> should contain</param>
-        public Level(double width, double height, double spacing, int enemies)
+        public Level(double width, double height, double spacing, int enemies, Canvas c)
         {
             Id = StatId++;
 
@@ -69,6 +70,16 @@ namespace Engine
             _openings = new List<Opening>();
 
             _keyHandler = new Dictionary<Keys.Key, bool>();
+
+            _c = c;
+
+            _blobs = Enumerable.Repeat(0, _numEnemies).Select(n =>
+            {
+                Creatures.Blob b = new Creatures.Blob(_spacing / 2, _spacing / 2, 0, 0, c);
+                b.Setup(_width, _height);
+
+                return b;
+            }).ToList();
         }
 
         /// <summary>
@@ -139,21 +150,13 @@ namespace Engine
         /// <param name="publisher">The <see cref="Game"/>-class</param>
         /// <param name="speed">Sets the update speed of the <see cref="Level"/></param>
         /// <param name="c"></param>
-        internal void Setup(ref Creatures.Hero hero, Game publisher, TimeSpan speed, Canvas c)
+        internal void Setup(ref Creatures.Hero hero, Game publisher, TimeSpan speed)
         {
             _publisher = publisher;
 
             _run = true;
 
             _hero = hero;
-
-            _blobs = Enumerable.Repeat(0, _numEnemies).Select(n => 
-            {
-                Creatures.Blob b = new Creatures.Blob(_spacing / 2, _spacing / 2, 0, 0, c);
-                b.Setup(_width, _height);
-
-                return b;
-            }).ToList();
 
             publisher.KeyChange += KeyHandler;
             publisher.LevelChange += (s, id) =>
@@ -225,9 +228,9 @@ namespace Engine
         /// Handles the drawing of the level
         /// </summary>
         /// <param name="c">The canvas to draw on</param>
-        internal void Draw(Canvas c)
+        internal void Draw()
         {
-            _grid.ForEach(elm => c.Children.Add(elm));
+            _grid.ForEach(elm => _c.Children.Add(elm));
             _openings.ForEach(o =>
             {
                 Rectangle rect = new Rectangle();
@@ -239,11 +242,11 @@ namespace Engine
 
                 rect.Margin = new Thickness(o.X, o.Y, 0, 0);
 
-                c.Children.Add(rect);
+                _c.Children.Add(rect);
             });
-            _blobs.ForEach(b => c.Children.Add(b.Body));
+            _blobs.ForEach(b => _c.Children.Add(b.Body));
 
-            c.Children.Add(_hero.Body);
+            _c.Children.Add(_hero.Body);
         }
 
         private void edges(Creatures.Creature thing, bool changable)

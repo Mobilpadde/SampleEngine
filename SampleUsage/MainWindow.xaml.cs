@@ -73,7 +73,7 @@ namespace SampleUsage
         {
             double spacing = Engine.Math.ThreadSafeRandom.NextDouble(10, 25);
 
-            Engine.Level l = new Engine.Level(this.Width, this.Height, spacing, Engine.Math.ThreadSafeRandom.Next(1, 4));
+            Engine.Level l = new Engine.Level(this.Width, this.Height, spacing, Engine.Math.ThreadSafeRandom.Next(1, 4), _c);
 
             double x = Engine.Math.ThreadSafeRandom.Selector(new double[] { spacing, this.Width - spacing });
             double y = Engine.Math.ThreadSafeRandom.Selector(new double[] { spacing, this.Height - spacing });
