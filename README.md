@@ -12,7 +12,7 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
  * ~~If a teleport to a new level is in the bottom right corner, the hero won't be able to use it.~~
  * ~~The program doesn't close after clicking `x`~~
  * ~~Enemies doesn't remember their last location~~
- * Sometimes the Game won't start
+ * ~~Sometimes the Game won't start~~ (Hacky-fix)
 
 ## Changes
  * 12-01-17
@@ -26,3 +26,4 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
   * Added a bit of intelligence of the Enemies
   * Fixed omni-bug for enemies, now they cannot see the whole board
   * Fixed enemies' memory
+  * Game now opens when asked

@@ -246,7 +246,11 @@ namespace Engine
             });
             _blobs.ForEach(b => _c.Children.Add(b.Body));
 
-            _c.Children.Add(_hero.Body);
+            try
+            {
+                _c.Children.Add(_hero.Body);
+            }
+            catch (NullReferenceException) { }
         }
 
         private void edges(Creatures.Creature thing, bool changable)
