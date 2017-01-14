@@ -15,6 +15,9 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
  * ~~Sometimes the Game won't start~~ (Hacky-fix)
 
 ## Changes
+ * 14-01-17
+  * Added custom key support + rewrote movement
+
  * 12-01-17
   * Initial Version
   * Added a new loading animation

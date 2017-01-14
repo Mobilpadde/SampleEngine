@@ -10,9 +10,9 @@ namespace Engine
     public class Game : IDisposable
     {
         /// <summary>
-        /// Fires when an accepted <see cref="Keys.Key"/> has been touched
+        /// Fires when an accepted <see cref="Keys.MoveKey"/> has been touched
         /// </summary>
-        internal event EventHandler<Keys.Key> KeyChange;
+        internal event EventHandler<Keys.MoveKey> KeyChange;
 
         /// <summary>
         /// Fires when <see cref="Level"/> should change
@@ -24,7 +24,8 @@ namespace Engine
         private List<Level> _levels;
         private Level _currentLevel;
 
-        private Dictionary<Move.Direction, Keys.Key> _keys;
+        private Helpers.SingleMoveKeyList _moveKeys;
+        private List<Key> _acceptedKeys;
 
         private Canvas _c;
 
@@ -46,13 +47,8 @@ namespace Engine
                 Math.ThreadSafeRandom.NextDouble(-height / 2, height / 2),
                 _c);
 
-            _keys = new Dictionary<Move.Direction, Keys.Key>()
-            {
-                { Move.Direction.East, new Keys.Right() },
-                { Move.Direction.West, new Keys.Left() },
-                { Move.Direction.South, new Keys.Down() },
-                { Move.Direction.North, new Keys.Up() }
-            };
+            _moveKeys = new Helpers.SingleMoveKeyList();
+            _acceptedKeys = new List<Key>();
         }
 
         public void Dispose()
@@ -77,6 +73,21 @@ namespace Engine
             _levels.ForEach(l => l.LevelChange += levelChange);
 
             _speed = speed;
+        }
+
+        public void AddMoveKeys()
+        {
+            foreach (Keys.MoveKey key in new List<Keys.MoveKey>() { new Keys.Up(), new Keys.Down(), new Keys.Left(), new Keys.Right() })
+            {
+                if (_moveKeys.Add(key))
+                    _acceptedKeys.AddRange(key.Accepted);
+            }
+        }
+
+        public void AddKey(Keys.MoveKey key)
+        {
+            if(_moveKeys.Add(key))
+                _acceptedKeys.AddRange(key.Accepted);
         }
 
         /// <summary>
@@ -111,25 +122,23 @@ namespace Engine
         }
 
         /// <summary>
-        /// Handle keystrokes to walk around
+        /// Handle keystrokes
         /// </summary>
         /// <param name="e">The keystroke</param>
         /// <param name="down">If the key is pressed or not</param>
         public void KeyHandler(KeyEventArgs e, bool down)
         {
-            List<Key> accepted = new List<Key>(){
-                Key.Right,  Key.Left,   Key.Down,   Key.Up,
-                Key.D,      Key.A,      Key.S,      Key.W,
-                Key.L,      Key.J,      Key.K,      Key.I
-            };
+            int idx = _acceptedKeys.IndexOf(e.Key);
 
-            int idx = accepted.IndexOf(e.Key) % 4;
-
-            if (idx >= 0)
+            if (idx > -1)
             {
-                _keys[(Move.Direction)idx].IsDown = down;
+                Keys.MoveKey key = _moveKeys.List.Where(k => k.Accepted.IndexOf(e.Key) > -1).ToArray()[0];
 
-                KeyChange?.Invoke(this, _keys[(Move.Direction)idx]);
+                if (key != null)
+                {
+                    key.IsDown = down;
+                    KeyChange?.Invoke(this, key);
+                }
             }
         }
 
@@ -142,7 +151,6 @@ namespace Engine
 
             _c.Dispatcher.InvokeAsync(new Action(() => _currentLevel.Setup(ref _hero, this, _speed)), System.Windows.Threading.DispatcherPriority.Render);
             
-
             Run();
         }
 

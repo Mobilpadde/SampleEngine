@@ -31,7 +31,7 @@ namespace Engine
         private bool _run;
         private Thread _moveThread;
 
-        private Dictionary<Keys.Key, bool> _keyHandler;
+        private Helpers.SingleMoveKeyList _keys;
 
         private double _width;
         private double _height;
@@ -69,7 +69,7 @@ namespace Engine
 
             _openings = new List<Opening>();
 
-            _keyHandler = new Dictionary<Keys.Key, bool>();
+            _keys = new Helpers.SingleMoveKeyList();
 
             _c = c;
 
@@ -177,30 +177,14 @@ namespace Engine
 
                     lock (_locker)
                     {
-                        foreach (KeyValuePair<Keys.Key, bool> pair in _keyHandler)
+                        foreach (Keys.MoveKey key in _keys)
                         {
                             Creatures.Position pos = _hero.Position;
 
-                            if (pair.Key.IsDown)
+                            if (key.IsDown)
                             {
-                                switch (pair.Key.Direction)
-                                {
-                                    case Move.Direction.East:
-                                        _hero.Position.Set(pos.X + _spacing / 2, pos.Y);
-                                        break;
-
-                                    case Move.Direction.West:
-                                        _hero.Position.Set(pos.X - _spacing / 2, pos.Y);
-                                        break;
-
-                                    case Move.Direction.South:
-                                        _hero.Position.Set(pos.X, pos.Y + _spacing / 2);
-                                        break;
-
-                                    case Move.Direction.North:
-                                        _hero.Position.Set(pos.X, pos.Y - _spacing / 2);
-                                        break;
-                                }
+                                double[] dir = key.Fire(_spacing / 2);
+                                _hero.Position.Set(pos.X + dir[0], pos.Y + dir[1]);
                             }
                         }
 
@@ -219,9 +203,10 @@ namespace Engine
         /// </summary>
         /// <param name="sender">The sender; not important</param>
         /// <param name="key">Sets the status of the current <see cref="Keys.Key"/></param>
-        internal void KeyHandler(object sender, Keys.Key key)
+        internal void KeyHandler(object sender, Keys.MoveKey key)
         {
-            _keyHandler[key] = key.IsDown;
+            if (_keys.Overrride(key))
+                _keys.Add(key);
         }
 
         /// <summary>

@@ -49,6 +49,7 @@ namespace SampleUsage
                 }));
             }));
 
+            _game.AddMoveKeys();
             this.KeyDown += (s, e) => _game.KeyHandler(e, true);
             this.KeyUp += (s, e) => _game.KeyHandler(e, false);
 
