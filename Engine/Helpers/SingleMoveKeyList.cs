@@ -8,6 +8,11 @@ namespace Engine.Helpers
 {
     public sealed class SingleMoveKeyList : SingleList<Keys.MoveKey>
     {
+        /// <summary>
+        /// Overwrites a <see cref="Keys.MoveKey"/> to <paramref name="key"/>
+        /// </summary>
+        /// <param name="key">The key to overwrite</param>
+        /// <returns>If the key has been overwritten</returns>
         public bool Overrride(Keys.MoveKey key)
         {
             if (List.Contains(key))

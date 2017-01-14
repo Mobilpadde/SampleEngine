@@ -17,6 +17,7 @@ Well, apparently Travis can't build windows-dependant packages, trying to figure
 ## Changes
  * 14-01-17
   * Added custom key support + rewrote movement
+  * Added comments to new and improved classes
 
  * 12-01-17
   * Initial Version

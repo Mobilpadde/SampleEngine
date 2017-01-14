@@ -51,6 +51,9 @@ namespace Engine
             _acceptedKeys = new List<Key>();
         }
 
+        /// <summary>
+        /// Dispose of everything and clean up using GC
+        /// </summary>
         public void Dispose()
         {
             _currentLevel.Dispose();
@@ -75,6 +78,9 @@ namespace Engine
             _speed = speed;
         }
 
+        /// <summary>
+        /// A shortcut to add movement keys to the game
+        /// </summary>
         public void AddMoveKeys()
         {
             foreach (Keys.MoveKey key in new List<Keys.MoveKey>() { new Keys.Up(), new Keys.Down(), new Keys.Left(), new Keys.Right() })
@@ -84,6 +90,10 @@ namespace Engine
             }
         }
 
+        /// <summary>
+        /// Add keys to the game to listen for
+        /// </summary>
+        /// <param name="key"></param>
         public void AddKey(Keys.MoveKey key)
         {
             if(_moveKeys.Add(key))
